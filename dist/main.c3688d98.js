@@ -250,20 +250,38 @@ function fetchAnimals(e) {
     var zip = document.querySelector('#zip').value;
 
     // fetch pets
+    // fetch(`http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=${animal}&location=${zip}`)
     (0, _fetchJsonp2.default)('http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=' + animal + '&location=' + zip + '&callback=callback', {
         jsonpCallbackFunction: 'callback'
     }).then(function (res) {
         return res.json();
     }).then(function (data) {
-        return console.log(data);
+        return showAnimals(data.petfinder.pets.pet);
     }).catch(function (err) {
-        return console.log(err);
+        return console.warn(err);
     });
 }
 
 // jsonp Callback
 function callback(data) {
     console.log(data);
+}
+
+// Show listings of fuzzy friends
+function showAnimals(pets) {
+    var results = document.querySelector('#results');
+
+    // Clear First
+    results.innerHTML = '';
+
+    // loop through pets
+    pets.forEach(function (pet) {
+        console.dir(pet);
+        var div = document.createElement('div');
+        div.classList.add('card', 'card-body', 'mb-3');
+        div.innerHTML = '\n            <div class="row">\n                <div class="col-sm-6">\n                    <h4>' + pet.name.$t + ' (' + pet.age.$t + ')</h4>\n                    <p class="text-secondary">' + pet.breeds.breed.$t + '</p>\n                    <p>' + pet.contact.address1.$t + ' ' + pet.contact.city.$t + ' ' + pet.contact.state.$t + ' ' + pet.contact.zip.$t + '</p>\n                    <ul class="list-group ml-3">\n                        <li class="list-group=item">Phone: ' + pet.contact.phone.$t + '</li>\n                        ' + (pet.contact.email.$t ? '<li class="list-group=item">Email: ' + pet.contact.email.$t + '</li>' : '') + '\n                        <li class="list-group=item">Shelter ID: ' + pet.shelterId.$t + '</li>\n                    </ul>\n                </div>\n                <div class="col-sm-6 text-center">\n                    <img class="img-fluid rounded-circle mt-2" src="' + pet.media.photos.photo[2].$t + '">\n                </div>\n\n            </div>\n        ';
+        results.appendChild(div);
+    });
 }
 },{"fetch-jsonp":"node_modules/fetch-jsonp/build/fetch-jsonp.js"}],"../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -294,7 +312,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '33201' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '40525' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
