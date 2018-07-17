@@ -44,7 +44,7 @@ function showAnimals(pets) {
             <div class="row">
                 <div class="col-sm-6">
                     <h4>${pet.name.$t} (${pet.age.$t})</h4>
-                    <p class="text-secondary">${pet.breeds.breed.$t}</p>
+                    <p class="text-secondary">${pet.breeds.breed.$t ? pet.breeds.breed.$t : pet.breeds.breed["0"].$t}</p>
                     <p>${pet.contact.address1.$t} ${pet.contact.city.$t} ${pet.contact.state.$t} ${pet.contact.zip.$t}</p>
                     <ul class="list-group ml-3">
                         <li class="list-group=item">Phone: ${pet.contact.phone.$t}</li>
