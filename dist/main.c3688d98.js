@@ -229,61 +229,101 @@ var global = arguments[3];
 
   module.exports = fetchJsonp;
 });
-},{}],"js/main.js":[function(require,module,exports) {
+},{}],"js/validate.js":[function(require,module,exports) {
 'use strict';
 
-var _fetchJsonp = require('fetch-jsonp');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.isValidZip = isValidZip;
+exports.alertMessage = alertMessage;
+function isValidZip(zip) {
+    return (/^\d{5}(-d\{4})?$/.test(zip)
+    );
+}
+
+// Display Alert Message
+function alertMessage(message, className) {
+    var div = document.createElement('div');
+    div.className = 'alert alert-' + className;
+    div.appendChild(document.createTextNode(message));
+
+    // get container
+    var container = document.querySelector('.container');
+    // get form
+    var form = document.querySelector('#pet-form');
+    // insert alert
+    container.insertBefore(div, form);
+
+    setTimeout(function () {
+        return document.querySelector('.alert').remove();
+    }, 3000);
+}
+},{}],"js/main.js":[function(require,module,exports) {
+"use strict";
+
+var _fetchJsonp = require("fetch-jsonp");
 
 var _fetchJsonp2 = _interopRequireDefault(_fetchJsonp);
 
+var _validate = require("./validate");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var petForm = document.querySelector('#pet-form'); // PetFinder API key = c5f90e0fc44747991721516ca355f18f
+// PetFinder API key = c5f90e0fc44747991721516ca355f18f
 
-petForm.addEventListener('submit', fetchAnimals);
+var petForm = document.querySelector("#pet-form");
+
+petForm.addEventListener("submit", fetchAnimals);
 
 // Fetch animals from API
 function fetchAnimals(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    var animal = document.querySelector('#animal').value;
-    var zip = document.querySelector('#zip').value;
+  var animal = document.querySelector("#animal").value;
+  var zip = document.querySelector("#zip").value;
 
-    // fetch pets
-    // fetch(`http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=${animal}&location=${zip}`)
-    (0, _fetchJsonp2.default)('http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=' + animal + '&location=' + zip + '&callback=callback', {
-        jsonpCallbackFunction: 'callback'
-    }).then(function (res) {
-        return res.json();
-    }).then(function (data) {
-        return showAnimals(data.petfinder.pets.pet);
-    }).catch(function (err) {
-        return console.warn(err);
-    });
+  // Validate zip
+  if (!(0, _validate.isValidZip)(zip)) {
+    showMessage("No deal on the zip!!", 'danger');
+    return;
+  }
+
+  // fetch pets
+  // fetch(`http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=${animal}&location=${zip}`)
+  (0, _fetchJsonp2.default)("http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=" + animal + "&location=" + zip + "&callback=callback", {
+    jsonpCallbackFunction: "callback"
+  }).then(function (res) {
+    return res.json();
+  }).then(function (data) {
+    return showAnimals(data.petfinder.pets.pet);
+  }).catch(function (err) {
+    return console.warn(err);
+  });
 }
 
 // jsonp Callback
 function callback(data) {
-    console.log(data);
+  console.log(data);
 }
 
 // Show listings of fuzzy friends
 function showAnimals(pets) {
-    var results = document.querySelector('#results');
+  var results = document.querySelector("#results");
 
-    // Clear First
-    results.innerHTML = '';
+  // Clear First
+  results.innerHTML = "";
 
-    // loop through pets
-    pets.forEach(function (pet) {
-        console.dir(pet);
-        var div = document.createElement('div');
-        div.classList.add('card', 'card-body', 'mb-3');
-        div.innerHTML = '\n            <div class="row">\n                <div class="col-sm-6">\n                    <h4>' + pet.name.$t + ' (' + pet.age.$t + ')</h4>\n                    <p class="text-secondary">' + pet.breeds.breed.$t + '</p>\n                    <p>' + pet.contact.address1.$t + ' ' + pet.contact.city.$t + ' ' + pet.contact.state.$t + ' ' + pet.contact.zip.$t + '</p>\n                    <ul class="list-group ml-3">\n                        <li class="list-group=item">Phone: ' + pet.contact.phone.$t + '</li>\n                        ' + (pet.contact.email.$t ? '<li class="list-group=item">Email: ' + pet.contact.email.$t + '</li>' : '') + '\n                        <li class="list-group=item">Shelter ID: ' + pet.shelterId.$t + '</li>\n                    </ul>\n                </div>\n                <div class="col-sm-6 text-center">\n                    <img class="img-fluid rounded-circle mt-2" src="' + pet.media.photos.photo[2].$t + '">\n                </div>\n\n            </div>\n        ';
-        results.appendChild(div);
-    });
+  // loop through pets
+  pets.forEach(function (pet) {
+    console.dir(pet);
+    var div = document.createElement("div");
+    div.classList.add("card", "card-body", "mb-3");
+    div.innerHTML = "\n            <div class=\"row\">\n                <div class=\"col-sm-6\">\n                    <h4>" + pet.name.$t + " (" + pet.age.$t + ")</h4>\n                    <p class=\"text-secondary\">" + (pet.breeds.breed.$t ? pet.breeds.breed.$t : pet.breeds.breed["0"].$t) + "</p>\n                    <p>" + pet.contact.address1.$t + " " + pet.contact.city.$t + " " + pet.contact.state.$t + " " + pet.contact.zip.$t + "</p>\n                    <ul class=\"list-group ml-3\">\n                        <li class=\"list-group-item\">Phone: " + pet.contact.phone.$t + "</li>\n                        " + (pet.contact.email.$t ? "<li class=\"list-group-item\">Email: " + pet.contact.email.$t + "</li>" : "") + "\n                        <li class=\"list-group-item\">Shelter ID: " + pet.shelterId.$t + "</li>\n                    </ul>\n                </div>\n                <div class=\"col-sm-6 text-center\">\n                    <img class=\"img-fluid rounded-circle mt-2\" src=\"" + pet.media.photos.photo[2].$t + "\">\n                </div>\n                <div class=\"col-sm-12 mt-2\">\n                  <p><b>About:</b> " + pet.description.$t + "</p>\n                </div>\n            </div>\n        ";
+    results.appendChild(div);
+  });
 }
-},{"fetch-jsonp":"node_modules/fetch-jsonp/build/fetch-jsonp.js"}],"../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"fetch-jsonp":"node_modules/fetch-jsonp/build/fetch-jsonp.js","./validate":"js/validate.js"}],"../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -312,7 +352,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '40525' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '44909' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
