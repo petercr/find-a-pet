@@ -1,6 +1,7 @@
 // PetFinder API key = c5f90e0fc44747991721516ca355f18f
 
 import fetchJsonp from "fetch-jsonp";
+import {isValidZip} from "./validate";
 
 const petForm = document.querySelector("#pet-form");
 
@@ -12,6 +13,12 @@ function fetchAnimals(e) {
 
   const animal = document.querySelector("#animal").value;
   const zip = document.querySelector("#zip").value;
+
+  // Validate zip
+  if (!isValidZip(zip)) {
+    showMessage("No deal on the zip!!", 'danger');
+    return;
+  }
 
   // fetch pets
   // fetch(`http://api.petfinder.com/pet.find?format=json&key=c5f90e0fc44747991721516ca355f18f&animal=${animal}&location=${zip}`)
@@ -76,7 +83,9 @@ function showAnimals(pets) {
                       pet.media.photos.photo[2].$t
                     }">
                 </div>
-
+                <div class="col-sm-12 mt-2">
+                  <p><b>About:</b> ${pet.description.$t}</p>
+                </div>
             </div>
         `;
     results.appendChild(div);
