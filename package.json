@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/petercr/find-a-pet/issues"
   },
-  "homepage": "https://github.com/petercr/find-a-pet/dist/",
+  "homepage": "https://github.com/petercr/find-a-pet/",
   "dependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
