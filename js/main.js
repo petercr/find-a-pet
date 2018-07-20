@@ -79,12 +79,12 @@ function showAnimals(pets) {
                     </ul>
                 </div>
                 <div class="col-sm-6 text-center">
-                    <img class="img-fluid rounded-circle mt-2" src="${
+                    <img class="img-fluid rounded mt-2" src="${
                       pet.media.photos.photo[2].$t
                     }">
                 </div>
-                <div class="col-sm-12 mt-2">
-                  <p><b>About:</b> ${pet.description.$t}</p>
+                <div class="col-sm-12 mt-4">
+                  <p style="font-family: 'Merienda', cursive;"><b>About:</b> ${pet.description.$t}</p>
                 </div>
             </div>
         `;
