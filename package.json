@@ -22,6 +22,7 @@
     "fetch-jsonp": "^1.1.3"
   },
   "devDependencies": {
+    "cssnano": "^4.1.7",
     "gh-pages": "^1.2.0"
   }
 }
