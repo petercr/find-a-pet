@@ -48,6 +48,7 @@ function showAnimals(pets) {
   // loop through pets
   pets.forEach(pet => {
     console.dir(pet);
+    if (pet.media.photos) {
     const div = document.createElement("div");
     div.classList.add("card", "card-body", "mb-3");
     div.innerHTML = `
@@ -80,7 +81,7 @@ function showAnimals(pets) {
                 </div>
                 <div class="col-sm-6 text-center">
                     <img class="img-fluid rounded mt-2" src="${
-                      pet.media.photos.photo[2].$t
+                      pet.media.photos.photo[2].$t 
                     }">
                 </div>
                 <div class="col-sm-12 mt-4">
@@ -89,5 +90,6 @@ function showAnimals(pets) {
             </div>
         `;
     results.appendChild(div);
+                  }
   });
 }
